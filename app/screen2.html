@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TempO - answers input</title>
+
+<style>
+  body {
+    font-family: -apple-system, sans-serif;
+    max-width: 400px;
+    margin: 0 auto;
+    padding: 20px;
+    background: hsl(222, 100%, 92%);
+  }
+  h1 { font-size: 18px; margin-bottom: 4px; }
+  #stationInfo { font-size: 13px; color: #666; margin-bottom: 16px; }
+  input {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-sizing: border-box;
+    margin-bottom: 16px;
+  }
+  #timerDisplay {
+    text-align: center;
+    font-size: 32px;
+    font-weight: 500;
+    margin-bottom: 12px;
+  }
+  .timerRow { display: flex; gap: 8px; margin-bottom: 20px; }
+  .timerRow button { flex: 1; }
+  button {
+    padding: 12px;
+    font-size: 16px;
+    font-weight: 500;
+    border: none;
+    border-radius: 8px;
+    background: #eee;
+    cursor: pointer;
+  }
+  #startBtn { background: #c8e6c9; }
+  #stopBtn { background: #ffcdd2; }
+  #taskLabel { font-size: 14px; color: #555; margin-bottom: 8px; }
+   
+ /* Сітка кнопок-літер */
+  #letterGrid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+  #letterGrid button {
+    background: #e3f2fd;
+    font-size: 18px;
+  }
+  #letterGrid button.selected {
+    background: #1976d2;
+    color: white;
+  }
+
+  #answersSummary {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 16px;
+    font-size: 13px;
+  }
+  #answersSummary span {
+    background: #eee;
+    padding: 4px 10px;
+    border-radius: 6px;
+  }
+
+  #saveBtn {
+    width: 100%;
+    background: #2e7d32;
+    color: white;
+  }
+
+</style>
+</head>
+<body>
+
+<h1>Answers input</h1>
+<div id="stationInfo">Loading...</div>
+
+<input type="text" id="athleteName" placeholder="Athlete number/name">
+
+<div id="timerDisplay">00:00</div>
+<div class="timerRow">
+  <button id="startBtn">START</button>
+  <button id="stopBtn">STOP</button>
+</div>
+
+<div id="taskLabel">Task 1/?</div>
+     
+<div id="letterGrid"></div>
+
+<div id="answersSummary"></div>
+
+<button id="saveBtn">Save and continue</button>
+
+<script>
+  // -------------------------------------------------------------
+  // STEP 0. Підвантажуємо налаштування з Екрану 1 (=localStorage)
+  // -------------------------------------------------------------
+  const config = JSON.parse(localStorage.getItem('tempoConfig'));
+
+  if (!config) {
+    alert('Спочатку заповни налаштування станції (Екран 1)');
+  }
+
+  const taskCount = parseInt(config.taskCount);
+  const stationNumber = parseInt(config.stationNumber);
+
+  document.getElementById('stationInfo').textContent =
+    `Станція ${stationNumber} · завдань: ${taskCount} · ${config.competitionName}`;
+
+  // -------------------------------------------------------------
+  // STEP 1. Стан поточного запису (поки не збережений).
+  // currentTaskIndex — яке завдання зараз активне (рахуємо з 0)
+  // currentAnswers — масив відповідей, спочатку всі "порожні"
+  // -------------------------------------------------------------
+  let currentTaskIndex = 0;
+  let currentAnswers = new Array(taskCount).fill(null);
+
+  // -------------------------------------------------------------
+  // STEP 2. Таймер. Тут setInterval раз на секунду додає 1 до рахунку і перемальовує екран.
+  // -------------------------------------------------------------
+  let secondsElapsed = 0;
+  let timerInterval = null;             // тут зберігається "ідентифікатор" запущеного таймера
+
+  function formatTime(totalSeconds) {
+    const m = Math.floor(totalSeconds / 60).toString().padStart(2, '0');
+    const s = (totalSeconds % 60).toString().padStart(2, '0');
+    return `${m}:${s}`;
+  }
+
+  document.getElementById('startBtn').addEventListener('click', function () {
+    if (timerInterval) return;            // запущено відлік
+    timerInterval = setInterval(function () {
+      secondsElapsed++;
+      document.getElementById('timerDisplay').textContent = formatTime(secondsElapsed);
+    }, 1000);
+  });
+
+  document.getElementById('stopBtn').addEventListener('click', function () {
+    clearInterval(timerInterval);         // зупиняєм відлік
+    timerInterval = null;
+  });
+
+  // -------------------------------------------------------------
+  // STEP 3. Функція renderLetterGrid():
+  //   1. Очистити #letterGrid (innerHTML = '')
+  //   2. Для кожної літери з масиву letters створити <button>
+  //      і додати його в #letterGrid (grid.appendChild(...))
+  //   3. Кожній кнопці призначити addEventListener('click', ...)
+  //      який записує літеру в currentAnswers[currentTaskIndex],
+  //      підвищує currentTaskIndex на 1,
+  //      і викликає renderAnswersSummary() щоб оновити список знизу.
+  // -------------------------------------------------------------
+
+  const letters = ["A", "B", "C", "D", "E", "F", "Z"];
+
+  function renderLetterGrid() {
+    letters.forEach(function(letter) {
+
+      const btn = document.createElement("button"); /* створ кн */
+      btn.textContent = letter;                     /* показ на ній літеру */
+      
+      /* реаг на клік */
+      btn.addEventListener("click", function() {
+        currentAnswers[currentTaskIndex] = letter;
+
+        if (currentTaskIndex < taskCount - 1) {
+          currentTaskIndex++;
+        }
+
+        renderAnswersSummary();
+      });
+
+      document.getElementById("letterGrid").appendChild(btn); /* додаєм готову кн на стор */
+    });
+  }
+
+  // -------------------------------------------------------------
+  // STEP 4. Функція renderAnswersSummary() 
+  // показує під кнопками поточний стан:
+  // "1: B", "2: A", "3: —" (прочерк якщо ще не відповіли).
+  // currentAnswers.forEach((answer, i) => {...}) дає 
+  // і відповідь, і її номер (i) — номер завдання це i + 1.
+  // -------------------------------------------------------------
+
+  function renderAnswersSummary() {
+    /* очистка контейнера, перед тим як додавати нові <span>: */
+    document.getElementById("answersSummary").innerHTML = "";
+
+    currentAnswers.forEach((answer, i) => {
+      const span = document.createElement("span");
+      span.textContent = (i + 1) + ": " + (answer || "—");
+      document.getElementById("answersSummary").appendChild(span);
+    });
+
+    /* taskLabel оновлюється після циклу forEach */
+    document.getElementById("taskLabel").textContent =
+        "Task " + (currentTaskIndex + 1) + "/" + taskCount;
+  }
+
+  // -------------------------------------------------------------
+  // STEP 5. Збереження запису
+  // -------------------------------------------------------------
+  document.getElementById('saveBtn').addEventListener('click', function () {
+
+    const record = {
+      stationNumber: stationNumber,
+      athleteName: document.getElementById('athleteName').value,
+      stationTime: secondsElapsed,
+      answers: currentAnswers
+    };
+
+    // Дістаємо вже збережені записи станції (якщо є), додаємо новий
+    const allRecords = JSON.parse(localStorage.getItem('tempoRecords') || '[]');
+    allRecords.push(record);
+    localStorage.setItem('tempoRecords', JSON.stringify(allRecords));
+
+    console.log('Збережено запис:', record);
+    alert('✓ збережено');
+  });
+
+  // Перший рендер при завантаженні сторінки
+  renderLetterGrid();
+  renderAnswersSummary();
+</script>
+
+</body>
+</html>
