@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TempO station settings</title>
+
+<style>
+  body {
+    font-family: -apple-system, sans-serif;
+    max-width: 400px;
+    margin: 0 auto;
+    padding: 20px;
+    background: hsl(222, 100%, 92%);
+  }
+  h1 {
+    font-size: 20px;
+    margin-bottom: 20px;
+  }
+  label {
+    display: block;
+    font-size: 14px;
+    color: #555;
+    margin-top: 16px;
+    margin-bottom: 4px;
+  }
+  input {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-sizing: border-box;
+  }
+  button {
+    width: 100%;
+    padding: 14px;
+    font-size: 16px;
+    font-weight: 500;
+    margin-top: 24px;
+    border: none;
+    border-radius: 8px;
+    background: #2e7d32;
+    color: white;
+    cursor: pointer;
+  }
+  button:active {
+    opacity: 0.85;
+  }
+  #status {
+    margin-top: 16px;
+    font-size: 14px;
+    color: #2e7d32;
+    text-align: center;
+    display: none;
+  }
+</style>
+</head>
+<body>
+
+<h1>TempO station settings</h1>
+
+<label for="compName">Сompetition name</label>
+<input type="text" id="compName" placeholder="for example Ukrainian Championship 2026">
+
+<label for="compDate">Competition date</label>
+<input type="date" id="compDate">
+
+<label for="stationNum">Station number</label>
+<input type="number" id="stationNum" min="1" placeholder="for example 2">
+
+<label for="taskCount">Number of tasks per station</label>
+<input type="number" id="taskCount" min="1" max="10" placeholder="for example 5">
+
+<button id="saveBtn">Save and continue</button>
+
+<div id="status">✓ Settings saved</div>
+
+<script>
+
+// Save and continue button - зберeже в localStorage заповнені поля 
+// — лишаються в пам'яті браузера навіть після закриття сторінки і ПРАЦЮЄ ОФЛАЙН
+
+// 1. Очікуємо клік на "Save and continue button":
+  const saveBtn = document.getElementById("saveBtn");
+
+  saveBtn.addEventListener("click", function () {
+
+    // 2. .value — наші заповнені поля, Зчитуєм їх:
+    const config = {
+      competitionName: document.getElementById("compName").value,
+      competitionDate: document.getElementById("compDate").value,
+      stationNumber: document.getElementById("stationNum").value,
+      taskCount: document.getElementById("taskCount").value
+    };
+
+    // 3. Перевірка — чи всі поля заповнені.
+    //    Object.values(config) перетворює об'єкт в масив значень,
+    //    .some(...) перевіряє чи є серед них хоч одне порожнє
+    const hasEmptyField = Object.values(config).some(value => value === "");
+
+    if (hasEmptyField) {
+      alert("Please fill in all fields");
+      return;             // зупиняємо функцію тут, далі код не виконується
+    }
+
+    // 4. Зберігаємо в localStorage.
+    //    localStorage вміє зберігати тільки текст (рядки),
+    //    тому об'єкт перетворюєм в JSON-рядок:
+    //    JSON.stringify({a: 1}) --> '{"a":1}'
+    localStorage.setItem("tempoConfig", JSON.stringify(config));
+
+    // 5. Підтвердження для користувача:
+    const status = document.getElementById("status");
+    status.style.display = "block";
+
+    // Ховаємо повідомлення через 2 секунди:
+    setTimeout(function () {
+      status.style.display = "none";
+    }, 2000);
+
+    console.log("Saved:", config);
+  });
+
+
+
+  // суддя перезавантажив сторінку - підтягуєм введені раніше дані:
+
+</script>
+
+</body>
+</html>
