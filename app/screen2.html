@@ -46,17 +46,17 @@
   #taskLabel { font-size: 14px; color: #555; margin-bottom: 8px; }
    
  /* Сітка кнопок-літер */
-  #letterGrid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
+  .letterRow {
+    display: flex;
     gap: 8px;
-    margin-bottom: 16px;
+    margin-bottom: 8px;
   }
-  #letterGrid button {
+  .letterRow button {
+    flex: 1;
     background: #e3f2fd;
     font-size: 18px;
   }
-  #letterGrid button.selected {
+  #letterRow button.selected {
     background: #1976d2;
     color: white;
   }
@@ -98,7 +98,9 @@
 
 <div id="taskLabel">Task 1/?</div>
 
-<div id="letterGrid"></div>
+<div id="letterGridRow1" class="letterRow"></div>
+<div id="letterGridRow2" class="letterRow"></div>
+<div id="letterGridRow3" class="letterRow"></div>
 
 <div id="answersSummary"></div>
 
@@ -171,28 +173,34 @@
   //      і викликає renderAnswersSummary() щоб оновити список знизу.
   // -------------------------------------------------------------
 
-  const letters = ["A", "B", "C", "D", "E", "F", "Z"];
+  const letterGroups = [
+    { id: "letterGridRow1", letters: ["A", "B", "C"] },
+    { id: "letterGridRow2", letters: ["D", "E", "F"] },
+    { id: "letterGridRow3", letters: ["Z"] }
+  ];
 
   function renderLetterGrid() {
-    letters.forEach(function(letter) {
+    letterGroups.forEach(function(group) {
+      group.letters.forEach(function(letter) {
 
-      const btn = document.createElement("button"); /* створ кн */
-      btn.textContent = letter;                     /* показ на ній літеру */
-      
-      /* реаг на клік */
-      btn.addEventListener("click", function() {
-        currentAnswers[currentTaskIndex] = letter;
+        const btn = document.createElement("button");
+        btn.textContent = letter;
 
-        if (currentTaskIndex < taskCount - 1) {
-          currentTaskIndex++;
-        }
+        btn.addEventListener("click", function() {
+          currentAnswers[currentTaskIndex] = letter;
 
-        renderAnswersSummary();
-      });
+          if (currentTaskIndex < taskCount - 1) {
+            currentTaskIndex++;
+          }
 
-      document.getElementById("letterGrid").appendChild(btn); /* додаєм готову кн на стор */
+          renderAnswersSummary();
+        });
+
+        document.getElementById(group.id).appendChild(btn);
+
     });
-  }
+  });
+}
 
   // -------------------------------------------------------------
   // STEP 4. Функція renderAnswersSummary() 
