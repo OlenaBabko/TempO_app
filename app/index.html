@@ -125,6 +125,17 @@
 
 
   // суддя перезавантажив сторінку - підтягуєм введені раніше дані:
+window.addEventListener("load", function () {
+    const saved = localStorage.getItem("tempoConfig");
+    if (saved) {
+      // JSON.parse робить зворотню дію до JSON.stringify - перетворює рядок назад в об'єкт
+      const config = JSON.parse(saved);
+      document.getElementById("compName").value = config.competitionName || "";
+      document.getElementById("compDate").value = config.competitionDate || "";
+      document.getElementById("stationNum").value = config.stationNumber || "";
+      document.getElementById("taskCount").value = config.taskCount || "";
+    }
+  });
 
 </script>
 
