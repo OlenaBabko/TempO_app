@@ -93,10 +93,11 @@
 <div class="timerRow">
   <button id="startBtn">START</button>
   <button id="stopBtn">STOP</button>
+  <button id="resetBtn">скинути</button>
 </div>
 
 <div id="taskLabel">Task 1/?</div>
-     
+
 <div id="letterGrid"></div>
 
 <div id="answersSummary"></div>
@@ -116,7 +117,7 @@
   const taskCount = parseInt(config.taskCount);
   const stationNumber = parseInt(config.stationNumber);
 
-  document.getElementById('stationInfo').textContent =
+  document.getElementById("stationInfo").textContent =
     `Станція ${stationNumber} · завдань: ${taskCount} · ${config.competitionName}`;
 
   // -------------------------------------------------------------
@@ -134,23 +135,30 @@
   let timerInterval = null;             // тут зберігається "ідентифікатор" запущеного таймера
 
   function formatTime(totalSeconds) {
-    const m = Math.floor(totalSeconds / 60).toString().padStart(2, '0');
-    const s = (totalSeconds % 60).toString().padStart(2, '0');
+    const m = Math.floor(totalSeconds / 60).toString().padStart(2, "0");
+    const s = (totalSeconds % 60).toString().padStart(2, "0");
     return `${m}:${s}`;
   }
 
-  document.getElementById('startBtn').addEventListener('click', function () {
+  document.getElementById("startBtn").addEventListener("click", function () {
     if (timerInterval) return;            // запущено відлік
     timerInterval = setInterval(function () {
       secondsElapsed++;
-      document.getElementById('timerDisplay').textContent = formatTime(secondsElapsed);
+      document.getElementById("timerDisplay").textContent = formatTime(secondsElapsed);
     }, 1000);
   });
 
-  document.getElementById('stopBtn').addEventListener('click', function () {
+  document.getElementById("stopBtn").addEventListener("click", function () {
     clearInterval(timerInterval);         // зупиняєм відлік
     timerInterval = null;
   });
+
+  document.getElementById("resetBtn").addEventListener("click", function () {
+  clearInterval(timerInterval);
+  timerInterval = null;
+  secondsElapsed = 0;
+  document.getElementById("timerDisplay").textContent = formatTime(secondsElapsed);
+});
 
   // -------------------------------------------------------------
   // STEP 3. Функція renderLetterGrid():
@@ -212,22 +220,22 @@
   // -------------------------------------------------------------
   // STEP 5. Збереження запису
   // -------------------------------------------------------------
-  document.getElementById('saveBtn').addEventListener('click', function () {
+  document.getElementById("saveBtn").addEventListener("click", function () {
 
     const record = {
       stationNumber: stationNumber,
-      athleteName: document.getElementById('athleteName').value,
+      athleteName: document.getElementById("athleteName").value,
       stationTime: secondsElapsed,
       answers: currentAnswers
     };
 
     // Дістаємо вже збережені записи станції (якщо є), додаємо новий
-    const allRecords = JSON.parse(localStorage.getItem('tempoRecords') || '[]');
+    const allRecords = JSON.parse(localStorage.getItem("tempoRecords") || '[]');
     allRecords.push(record);
-    localStorage.setItem('tempoRecords', JSON.stringify(allRecords));
+    localStorage.setItem("tempoRecords", JSON.stringify(allRecords));
 
-    console.log('Збережено запис:', record);
-    alert('✓ збережено');
+    console.log("Збережено запис:", record);
+    alert("✓ збережено");
   });
 
   // Перший рендер при завантаженні сторінки
