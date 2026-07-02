@@ -103,11 +103,21 @@
   <button id="resetBtn">скинути</button>
 </div>
 
-<div id="taskLabel">Task 1/?</div>
+<!-- блок вводу -->
+<div id="inputSection">
+  <div id="taskLabel">Task 1/...</div>
+  <div id="letterGridRow1" class="letterRow"></div>
+  <div id="letterGridRow2" class="letterRow"></div>
+  <div id="letterGridRow3" class="letterRow"></div>
+</div>
 
-<div id="letterGridRow1" class="letterRow"></div>
-<div id="letterGridRow2" class="letterRow"></div>
-<div id="letterGridRow3" class="letterRow"></div>
+<!-- блок перевірки — після inputSection -->
+<div id="reviewSection" style="display:none;">
+  <div style="font-size:14px; color:#555; margin-bottom:8px;">
+    Read the answers - tap to change
+  </div>
+  <div id="reviewList"></div>
+</div>
 
 <div id="answersSummary"></div>
 
@@ -160,6 +170,11 @@
   document.getElementById("stopBtn").addEventListener("click", function () {
     clearInterval(timerInterval);         // зупиняєм відлік
     timerInterval = null;
+
+    // переключаємось на новий блок (невидимий)
+    document.getElementById("inputSection").style.display = "none";
+    document.getElementById("reviewSection").style.display = "block";
+    renderReviewList();
   });
 
   document.getElementById("resetBtn").addEventListener("click", function () {
@@ -238,7 +253,62 @@
   }
 
   // -------------------------------------------------------------
-  // STEP 5. Збереження запису
+  // STEP 5. Перевірка та редагування відповідей
+  // -------------------------------------------------------------
+  function renderReviewList() {
+  const reviewList = document.getElementById("reviewList");
+  reviewList.innerHTML = "";
+
+  currentAnswers.forEach((answer, i) => {
+    const row = document.createElement("div");
+    row.style.cssText = "display:flex; justify-content:space-between; align-items:center; background:#eee; padding:8px 12px; border-radius:8px; margin-bottom:8px;";
+
+    const label = document.createElement("span");
+    label.textContent = `Завдання ${i + 1}`;
+
+    const answerBtn = document.createElement('button');
+    answerBtn.textContent = answer || "—";
+    answerBtn.style.cssText = "padding:4px 16px; font-weight:500;";
+
+    // при кліку — показуємо міні-сітку літер для цього завдання
+    answerBtn.addEventListener("click", function() {
+      editAnswer(i, row);
+    });
+
+    row.appendChild(label);
+    row.appendChild(answerBtn);
+    reviewList.appendChild(row);
+  });
+}
+
+function editAnswer(taskIndex, row) {
+  // прибираємо попередню міні-сітку якщо вже відкрита
+  const existing = document.getElementById("miniGrid");
+  if (existing) existing.remove();
+
+  const miniGrid = document.createElement("div");
+  miniGrid.id = "miniGrid";
+  miniGrid.style.cssText = "display:flex; flex-wrap:wrap; gap:6px; margin-top:8px;";
+
+  const allLetters = ["A", "B", "C", "D", "E", "F", "Z"];
+  allLetters.forEach(function(letter) {
+    const btn = document.createElement("button");
+    btn.textContent = letter;
+    btn.style.cssText = "padding:6px 12px;";
+    btn.addEventListener("click", function() {
+      currentAnswers[taskIndex] = letter;
+      miniGrid.remove();
+      renderReviewList(); // перемальовуємо список з новою відповіддю
+    });
+    miniGrid.appendChild(btn);
+  });
+
+  row.insertAdjacentElement("afterend", miniGrid);
+}
+
+
+  // -------------------------------------------------------------
+  // STEP 6. Збереження запису
   // -------------------------------------------------------------
   document.getElementById("saveBtn").addEventListener("click", function () {
 
