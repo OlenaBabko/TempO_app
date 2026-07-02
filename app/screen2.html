@@ -50,6 +50,8 @@
     display: flex;
     gap: 8px;
     margin-bottom: 8px;
+    pointer-events: none;
+    opacity: 0.5;
   }
   .letterRow button {
     flex: 1;
@@ -117,11 +119,18 @@
     Read the answers - tap to change
   </div>
   <div id="reviewList"></div>
+
+  <button id="saveBtn">✓ Confirm and Save</button>
+
+  <div id="savedStatus" style="display:none; text-align:center; color:#2e7d32; margin-top:12px;">
+    ✓ збережено
+  </div>
+
+  <button id="nextBtn" style="display:none;">наступний спортсмен</button>
 </div>
 
 <div id="answersSummary"></div>
 
-<button id="saveBtn">Save and continue</button>
 
 <script>
   // -------------------------------------------------------------
@@ -165,6 +174,12 @@
       secondsElapsed++;
       document.getElementById("timerDisplay").textContent = formatTime(secondsElapsed);
     }, 1000);
+
+    // розблокувати літери після старту
+    document.querySelectorAll(".letterRow").forEach(function(row) {
+      row.style.pointerEvents = "auto";
+      row.style.opacity = "1";
+    });
   });
 
   document.getElementById("stopBtn").addEventListener("click", function () {
