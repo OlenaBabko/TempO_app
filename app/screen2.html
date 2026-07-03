@@ -183,6 +183,8 @@
   });
 
   document.getElementById("stopBtn").addEventListener("click", function () {
+    if (!timerInterval) return;          // вийти якщо таймер не запущ
+
     clearInterval(timerInterval);         // зупиняєм відлік
     timerInterval = null;
 
@@ -194,11 +196,28 @@
   });
 
   document.getElementById("resetBtn").addEventListener("click", function () {
-  clearInterval(timerInterval);
-  timerInterval = null;
-  secondsElapsed = 0;
-  document.getElementById("timerDisplay").textContent = formatTime(secondsElapsed);
-});
+    clearInterval(timerInterval);
+    timerInterval = null;
+    secondsElapsed = 0;
+    document.getElementById("timerDisplay").textContent = "00:00";
+
+    // скинути введені відповіді
+    currentTaskIndex = 0;
+    currentAnswers = new Array(taskCount).fill(null);
+
+    // розблокувати літери якщо заблок
+    document.querySelectorAll(".letterRow").forEach(function(row) {
+      row.style.pointerEvents = "none";
+      row.style.opacity = "0.5";
+    });
+
+    // повернутись на екран вводу
+    document.getElementById("inputSection").style.display = "block";
+    document.getElementById("reviewSection").style.display = "none";
+    document.getElementById("answersSummary").style.display = "flex";
+
+    renderAnswersSummary();
+  });
 
   // -------------------------------------------------------------
   // STEP 3. Функція renderLetterGrid():
