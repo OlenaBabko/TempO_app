@@ -89,6 +89,13 @@
     color: white;
   }
 
+  #nextBtn {
+    width: 100%;
+    background: #1565c0;
+    color: white;
+    margin-top: 8px;
+  }
+
 </style>
 </head>
 <body>
@@ -372,6 +379,37 @@ function editAnswer(taskIndex, row) {
     document.getElementById("nextBtn").style.display = "block";
   });
 
+
+// -------------------------------------------------------------
+// STEP 7. Наступний спортсмен
+// -------------------------------------------------------------
+document.getElementById("nextBtn").addEventListener("click", function () {
+  // скидаємо всі поля
+  document.getElementById("athleteName").value = "";
+  secondsElapsed = 0;
+  timerInterval = null;
+  currentTaskIndex = 0;
+  currentAnswers = new Array(taskCount).fill(null);
+  document.getElementById("timerDisplay").textContent = "00:00";
+
+  // блокуємо літери
+  document.querySelectorAll(".letterRow").forEach(function(row) {
+    row.style.pointerEvents = "none";
+    row.style.opacity = "0.5";
+  });
+
+  // повертаємось на екран вводу
+  document.getElementById("inputSection").style.display = "block";
+  document.getElementById("reviewSection").style.display = "none";
+  document.getElementById("answersSummary").style.display = "flex";
+
+  // ховаємо статус і кнопку "наступний", повертаємо "зберегти"
+  document.getElementById("saveBtn").style.display = "block";
+  document.getElementById("savedStatus").style.display = "none";
+  document.getElementById("nextBtn").style.display = "none";
+
+  renderAnswersSummary();
+});
 
 
   // Перший рендер при завантаженні сторінки
