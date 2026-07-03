@@ -347,21 +347,32 @@ function editAnswer(taskIndex, row) {
   // -------------------------------------------------------------
   document.getElementById("saveBtn").addEventListener("click", function () {
 
+    // перевірка що ім'я не порожнє
+    const athleteName = document.getElementById("athleteName").value.trim();
+    if (!athleteName) {
+      alert("Введіть номер або ім'я спортсмена");
+      return;
+  }
+
     const record = {
       stationNumber: stationNumber,
-      athleteName: document.getElementById("athleteName").value,
+      athleteName: athleteName,
       stationTime: secondsElapsed,
       answers: currentAnswers
     };
 
-    // Дістаємо вже збережені записи станції (якщо є), додаємо новий
+    // дістаємо вже збережені записи станції (якщо є), додаємо новий
     const allRecords = JSON.parse(localStorage.getItem("tempoRecords") || "[]");
     allRecords.push(record);
     localStorage.setItem("tempoRecords", JSON.stringify(allRecords));
 
-    console.log("Збережено запис:", record);
-    alert("✓ збережено");
+    // ховаємо кнопку збереження, показуємо статус і кнопку "наступний"
+    document.getElementById("saveBtn").style.display = "none";
+    document.getElementById("savedStatus").style.display = "block";
+    document.getElementById("nextBtn").style.display = "block";
   });
+
+
 
   // Перший рендер при завантаженні сторінки
   renderLetterGrid();
