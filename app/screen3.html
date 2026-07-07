@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TempO - answers export</title>
+<style>
+  body {
+    font-family: -apple-system, sans-serif;
+    max-width: 400px;
+    margin: 0 auto;
+    padding: 20px;
+    background:  hsl(222, 100%, 92%);
+  }
+  h1 { font-size: 18px; margin-bottom: 4px; }
+  #stationInfo { font-size: 13px; color: #666; margin-bottom: 20px; }
+
+  #recordsList {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 24px;
+  }
+  .record-card {
+    background: white;
+    border-radius: 8px;
+    padding: 12px;
+    font-size: 14px;
+  }
+  .record-card .athlete {
+    font-weight: 500;
+    margin-bottom: 4px;
+  }
+  .record-card .details {
+    color: #666;
+    font-size: 13px;
+  }
+
+  #emptyMsg {
+    text-align: center;
+    color: #999;
+    font-size: 14px;
+    margin: 40px 0;
+  }
+
+  button {
+    width: 100%;
+    padding: 14px;
+    font-size: 16px;
+    font-weight: 500;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-bottom: 10px;
+  }
+  #exportBtn {
+    background: #2e7d32;
+    color: white;
+  }
+  #clearBtn {
+    background: #ffebee;
+    color: #c62828;
+  }
+</style>
+</head>
+<body>
+
+<h1>Answers export</h1>
+<div id="stationInfo">Loading...</div>
+
+<div id="recordsList"></div>
+<div id="emptyMsg" style="display:none;">No entries yet</div>
+
+<button id="exportBtn">⬇ Download CSV</button>
+<button id="clearBtn">🗑 Clear all entries</button>
+
+<script>
+  // -------------------------------------------------------------
+  // КРОК 1. Підвантажуємо конфігурацію і записи з localStorage
+  // -------------------------------------------------------------
+  const config = JSON.parse(localStorage.getItem("tempoConfig"));
+
+  if (!config) {
+    alert("Спочатку заповни налаштування (Екран 1)");
+  } else {
+    document.getElementById("stationInfo").textContent =
+      `Станція ${config.stationNumber} · ${config.competitionName} · ${config.competitionDate}`;
+  }
+
+  // -------------------------------------------------------------
+  // КРОК 2. Відображення збережених записів.
+  // Проходимо по масиву records і для кожного створюємо картку.
+  // -------------------------------------------------------------
+
+
+  // -------------------------------------------------------------
+  // КРОК 3. Генерація і скачування CSV.
+  // CSV — складаємо його як рядок, потім "обманюємо" браузер:
+  // створюємо тимчасове посилання <a href="..."> і клікаємо по
+  // ньому програмно — браузер думає що клікнули на посилання
+  // для скачування і завантажує файл.
+  // -------------------------------------------------------------
+
+
+  // -------------------------------------------------------------
+  // КРОК 4. Очищення всіх записів (з підтвердженням).
+  // -------------------------------------------------------------
+
+
+</script>
+
+</body>
+</html>
