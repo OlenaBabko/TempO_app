@@ -91,7 +91,44 @@
   // КРОК 2. Відображення збережених записів.
   // Проходимо по масиву records і для кожного створюємо картку.
   // -------------------------------------------------------------
+  function renderRecords() {
+    const records = JSON.parse(localStorage.getItem("tempoRecords") || "[]");
+    const list = document.getElementById("recordsList");
+    const emptyMsg = document.getElementById("emptyMsg");
 
+    list.innerHTML = "";
+
+    if (records.length === 0) {
+      emptyMsg.style.display = "block";
+      return;
+    }
+
+    emptyMsg.style.display = "none";
+
+    records.forEach(function(record, i) {
+      const card = document.createElement("div");
+      card.className = "record-card";
+
+      // форматуємо час: секунди → MM:SS
+      const m = Math.floor(record.stationTime / 60).toString().padStart(2, "0");
+      const s = (record.stationTime % 60).toString().padStart(2, "0");
+      const timeStr = `${m}:${s}`;
+
+      // відповіді — об'єднуємо в рядок через пробіл
+      // join() — склеює елементи в один рядок
+      // ['A', 'B', 'C'].join(' · ') → 'A · B · C'
+      const answersStr = record.answers.join(" · ");
+
+      card.innerHTML = `
+        <div class="athlete">${i + 1}. ${record.athleteName}</div>
+        <div class="details">Time: ${timeStr} · Answers: ${answersStr}</div>
+      `;
+
+      list.appendChild(card);
+    });
+  }
+
+  renderRecords();
 
   // -------------------------------------------------------------
   // КРОК 3. Генерація і скачування CSV.
