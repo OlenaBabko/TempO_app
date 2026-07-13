@@ -137,7 +137,49 @@
   // ньому програмно — браузер думає що клікнули на посилання
   // для скачування і завантажує файл.
   // -------------------------------------------------------------
+ document.getElementById("exportBtn").addEventListener("click", function () {
+    const records = JSON.parse(localStorage.getItem("tempoRecords") || "[]");
 
+    if (records.length === 0) {
+      alert("Немає записів для експорту");
+      return;
+    }
+
+    // Заголовок CSV — перший рядок файлу
+    // Кількість колонок для відповідей залежить від налаштувань
+    const taskCount = parseInt(config.taskCount);
+    const answerHeaders = [];
+    for (let i = 1; i <= taskCount; i++) {
+      answerHeaders.push(`Завдання_${i}`);
+    }
+    // join(',') — склеює масив в рядок через кому (стандарт CSV)
+    const header = ["Станція", "Спортсмен", "Час_сек", ...answerHeaders].join(",");
+
+    // Рядки даних — один рядок на кожен запис
+    const rows = records.map(function(record) {
+      return [
+        record.stationNumber,
+        record.athleteName,
+        record.stationTime,
+        ...record.answers.map(a => a || "")  // null замінюємо на пустий рядок
+      ].join(",");
+    });
+
+    // Складаємо весь файл: заголовок + рядки, розділені переносом рядка
+    const csvContent = [header, ...rows].join("\n");
+
+    // Трюк зі скачуванням:
+    // Blob — це "шматок даних в пам'яті браузера" (тут — наш CSV-текст)
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob); // створюємо тимчасове посилання на Blob
+
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `station_${config.stationNumber}_${config.competitionDate}.csv`;
+    link.click(); // програмний клік — запускає скачування
+
+    URL.revokeObjectURL(url); // прибираємо тимчасове посилання з пам'яті
+  });
 
   // -------------------------------------------------------------
   // КРОК 4. Очищення всіх записів (з підтвердженням).
