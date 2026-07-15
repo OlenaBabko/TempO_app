@@ -1,0 +1,22 @@
+{
+  "name": "TempO judge",
+  "short_name": "TempO",
+  "description": "App for judges at TempO stations",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#f5f5f0",
+  "theme_color": "#2e7d32",
+  "lang": "uk",
+  "icons": [
+    {
+      "src": "icons/CP.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icons/CP_TempO.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
