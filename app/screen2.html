@@ -96,6 +96,17 @@
     margin-top: 8px;
   }
 
+  #exportLink {
+  display: block;
+  margin-top: 20px;
+  }
+
+  #exportLink button {
+    width: 100%;
+    background: #555;
+    color: white;
+  }
+
 </style>
 </head>
 <body>
@@ -424,10 +435,8 @@ document.getElementById("nextBtn").addEventListener("click", function () {
 
 
 <!-- посилання на експорт: -->
-<a href="screen3.html">
-  <button style="background:#555; color:white; margin-top:20px;">
-    → експорт CSV
-  </button>
+<a href="screen3.html" id="exportLink">
+  <button>→ експорт CSV</button>
 </a>
 
 
