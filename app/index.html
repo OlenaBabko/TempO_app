@@ -7,17 +7,27 @@
 
 <style>
   body {
+    position: relative;  /* потрібно для ::before */
     font-family: -apple-system, sans-serif;
     max-width: 400px;
     margin: 0 auto;
     padding: 20px;
     
     background-color: hsl(222, 100%, 92%);
-    background-image: url("images/background2.png");
-    background-repeat: no-repeat;
-    background-position: center top;
-    background-size: contain;
+    min-height: 100vh;
   }
+
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background-image: url("images/background2.png");
+    background-size: cover;
+    background-position: center center;
+    opacity: 0.5;
+    z-index: -1;
+  }
+
   h1 {
     font-size: 20px;
     margin-bottom: 20px;
