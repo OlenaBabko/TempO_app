@@ -9,6 +9,8 @@ SUMMARY_PATH = PROCESSED_DIR / ".csv"
 
 def load_results(path: Path) -> pd.DataFrame:
     """Load raw TempO results from CSV"""
+    if not path.exists():
+        raise FileNotFoundError(f"File not found: {path}")
 
     return pd.read_csv(path)
 
