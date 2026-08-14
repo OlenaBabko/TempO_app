@@ -17,9 +17,14 @@ def load_results(path: Path) -> pd.DataFrame:
 
 def prepare_results(df: pd.DataFrame) -> pd.DataFrame:
     """Add correctness and penalty columns"""
+    df = df.copy()
+
+    df["is_correct"] = df["answer"] == df["correct_answer"]
 
     # неправильна відповідь = час + штраф
-    # Поки ставимо умовний штраф 30 секунд
+    # ставимо штраф = 30 секунд
+    df["penalty_sec"] = df["is_correct"].apply(lambda x: 0 if x else 30)
+    df["total_time_sec"] = df["time_sec"] + df["penalty_sec"]
 
     return df
 
