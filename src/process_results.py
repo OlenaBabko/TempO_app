@@ -31,6 +31,25 @@ def prepare_results(df: pd.DataFrame) -> pd.DataFrame:
 
 def summarize_results(df: pd.DataFrame) -> pd.DataFrame:
     """Create participant-level summary"""
+    summary = (
+        df.groupby("participant", as_index=False)
+        .agg(
+            task_total=("task", "count"),
+            correct_answers=("is_correct", "sum"),
+            raw_time_sec=("time_sec", "sum"),
+            penalty_sec=("penalty_sec", "sum"),
+            total_time_sec=("total_time_sec", "sum"),
+        )
+    )
+
+    summary["accuracy_pct"] = (
+        summary["correct_answers"] / summary["task_total"] * 100
+    ).round(2)
+
+    summary = summary.sort_values(
+        by=["total_time_sec", "correct_answers"],
+        ascending=[True, False]
+    )
 
     return summary
 
