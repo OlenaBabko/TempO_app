@@ -57,6 +57,15 @@ def summarize_results(df: pd.DataFrame) -> pd.DataFrame:
 def main():
     PROCESSED_DIR.mkdir(parents=True, exist_ok=True)
 
+    results = load_results(RAW_PATH)
+    prepared = prepare_results(results)
+    summary = summarize_results(prepared)
+
+    summary.to_csv(SUMMARY_PATH, index=False)
+
+    print("TempO results processed successfully!")
+    print(f"Saved summary to: {SUMMARY_PATH}")
+    print()
     print(summary)
 
 
