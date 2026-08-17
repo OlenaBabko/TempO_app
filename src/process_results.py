@@ -2,9 +2,9 @@ import pandas as pd
 from pathlib import Path
 
 
-RAW_PATH = Path("")
-PROCESSED_DIR = Path("")
-SUMMARY_PATH = PROCESSED_DIR / ".csv"
+RAW_PATH = Path("data/raw/results.csv")
+PROCESSED_DIR = Path("data/processed")
+SUMMARY_PATH = PROCESSED_DIR / "results_summary.csv"
 
 
 def load_results(path: Path) -> pd.DataFrame:
