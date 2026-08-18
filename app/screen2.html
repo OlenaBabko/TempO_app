@@ -76,6 +76,7 @@
     border: 1px solid rgba(0, 0, 0, 0.18);
     border-radius: 14px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+    transition: background 0.15s ease, color 0.15s ease, transform 0.1s ease;
   }
    #letterGridRow3 {
     justify-content: center;
@@ -84,10 +85,11 @@
     flex: none;
     width: 32%;
   }
-  .letterRow button.selected {
+  .letterRow button.clicked {
     background: #1976d2;
     color: white;
     border: 2px solid #0d47a1;
+    transform: scale(0.96);
   }
 
   #answersSummary {
@@ -288,7 +290,11 @@
         btn.addEventListener("click", function() {
           currentAnswers[currentTaskIndex] = letter;
 
-          btn.classList.add("selected");
+          btn.classList.add("clicked");
+
+          setTimeout(function() {
+            btn.classList.remove("clicked");
+          }, 180);
 
           if (currentTaskIndex < taskCount - 1) {
             currentTaskIndex++;
