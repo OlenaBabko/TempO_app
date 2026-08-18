@@ -6,11 +6,25 @@
 <title>TempO - answers export</title>
 <style>
   body {
+    position: relative;
     font-family: -apple-system, sans-serif;
     max-width: 400px;
     margin: 0 auto;
     padding: 20px;
-    background:  hsl(222, 100%, 92%);
+
+    background-color: hsl(222, 100%, 92%);
+    min-height: 100vh;
+  }
+
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background-image: url("images/background2.png");
+    background-size: cover;
+    background-position: center center;
+    opacity: 0.5;
+    z-index: -1;
   }
   h1 { font-size: 18px; margin-bottom: 4px; }
   #stationInfo { font-size: 13px; color: #666; margin-bottom: 20px; }
