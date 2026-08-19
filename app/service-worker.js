@@ -7,7 +7,9 @@ const FILES_TO_CACHE = [
   "./index.html",
   "./screen2.html",
   "./screen3.html",
-  "./manifest.json"
+  "./manifest.json",
+  "images/background2.png",
+  "icons/CP.png"
 ];
 
 // ПОДІЯ 1: install — спрацьовує один раз коли service worker вперше завантажується
