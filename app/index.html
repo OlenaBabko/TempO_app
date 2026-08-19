@@ -125,14 +125,12 @@
     //    JSON.stringify({a: 1}) --> '{"a":1}'
     localStorage.setItem("tempoConfig", JSON.stringify(config));
 
-    // 5. Підтвердження для користувача:
     const status = document.getElementById("status");
     status.style.display = "block";
 
-    // Ховаємо повідомлення через 2 секунди:
     setTimeout(function () {
-      status.style.display = "none";
-    }, 2000);
+      window.location.href = "screen2.html";
+    }, 500);
 
     console.log("Saved:", config);
   });
@@ -152,14 +150,6 @@
     }
   });
 
-
-
-// перейти до роботи судді
-  <a href="screen2.html">
-    <button style="background:#1565c0; color:white; margin-top:8px;">
-      → перейти до роботи судді
-    </button>
-  </a>
 
 </script>
 
