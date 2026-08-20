@@ -199,6 +199,7 @@
   // -------------------------------------------------------------
   let currentTaskIndex = 0;
   let currentAnswers = new Array(taskCount).fill(null);
+  let wasCorrected = false;             // false — відповіді НЕ виправляли вручну
 
   // -------------------------------------------------------------
   // STEP 2. Таймер. Тут setInterval раз на секунду додає 1 до рахунку і перемальовує екран.
@@ -252,6 +253,7 @@
     // скинути введені відповіді
     currentTaskIndex = 0;
     currentAnswers = new Array(taskCount).fill(null);
+    wasCorrected = false;           // після скидання не потягнуться "відкореговані відповіді"
 
     // розблокувати літери якщо заблок
     document.querySelectorAll(".letterRow").forEach(function(row) {
@@ -387,11 +389,27 @@ function editAnswer(taskIndex, row) {
     const btn = document.createElement("button");
     btn.textContent = letter;
     btn.style.cssText = "padding:6px 12px;";
+
     btn.addEventListener("click", function() {
+      
+      const oldAnswer = currentAnswers[taskIndex];
+      if (oldAnswer === letter) {
+        miniGrid.remove();
+        return;
+      }
+      const confirmed = confirm(
+        `Змінити відповідь у завданні ${taskIndex + 1}: ${oldAnswer || "—"} → ${letter}?`
+      );
+      if (!confirmed) {
+        return;
+      }
+
       currentAnswers[taskIndex] = letter;
+      wasCorrected = true;
       miniGrid.remove();
       renderReviewList(); // перемальовуємо список з новою відповіддю
     });
+
     miniGrid.appendChild(btn);
   });
 
@@ -440,6 +458,7 @@ document.getElementById("nextBtn").addEventListener("click", function () {
   timerInterval = null;
   currentTaskIndex = 0;
   currentAnswers = new Array(taskCount).fill(null);
+  wasCorrected = false;           // кожен спортсмен починає з чистої позначки wasCorrected = false
   document.getElementById("timerDisplay").textContent = "00:00";
 
   // блокуємо літери
