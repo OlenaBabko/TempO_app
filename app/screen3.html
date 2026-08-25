@@ -140,6 +140,7 @@
       card.innerHTML = `
         <div class="athlete">${i + 1}. ${record.athleteName}</div>
         <div class="details">Time: ${timeStr} · Answers: ${answersStr}</div>
+        ${record.corrected ? '<div class="correctedNote">corrected</div>' : ''}
       `;
 
       list.appendChild(card);
