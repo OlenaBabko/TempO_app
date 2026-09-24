@@ -226,8 +226,31 @@
   renderReviewList();
 }
 
-  document.getElementById("startBtn").addEventListener("click", function () {
+/*   document.getElementById("startBtn").addEventListener("click", function () {
     if (timerInterval) return;            // запущено відлік
+    timerInterval = setInterval(function () {
+      secondsElapsed++;
+      document.getElementById("timerDisplay").textContent = formatTime(secondsElapsed);
+    }, 1000);
+
+    // розблокувати літери після старту
+    document.querySelectorAll(".letterRow").forEach(function(row) {
+      row.style.pointerEvents = "auto";
+      row.style.opacity = "1";
+    });
+  }); */
+
+  document.getElementById("startBtn").addEventListener("click", function () {
+    const athleteName = document.getElementById("athleteName").value.trim();
+
+    if (!athleteName) {
+      alert("Спочатку введіть номер або імʼя спортсмена");
+      document.getElementById("athleteName").focus();
+      return;
+    }
+
+    if (timerInterval) return; // якщо таймер уже запущено — нічого не робимо
+
     timerInterval = setInterval(function () {
       secondsElapsed++;
       document.getElementById("timerDisplay").textContent = formatTime(secondsElapsed);
