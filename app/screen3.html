@@ -206,7 +206,9 @@
   document.getElementById("clearBtn").addEventListener("click", function () {
     if (confirm("Почати нову сесію? Усі збережені записи на цьому пристрої буде видалено. Цю дію не можна скасувати!")) {
       localStorage.removeItem("tempoRecords");
-      renderRecords();
+
+      // повернення на стартовий екран:
+      window.location.href = "index.html";
     }
   });
 
