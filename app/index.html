@@ -89,6 +89,10 @@
 
 <button id="saveBtn">Save and continue</button>
 
+<button id="clearRecordsBtn" type="button" class="secondaryBtn">
+  New session / clear old results
+</button>
+
 <div id="status">✓ Settings saved</div>
 
 <script>
@@ -135,6 +139,18 @@
     console.log("Saved:", config);
   });
 
+  
+    // Очистити старі результати на цьому пристрої
+    document.getElementById("clearRecordsBtn").addEventListener("click", function () {
+    const confirmed = confirm(
+      "Очистити старі результати на цьому пристрої? Налаштування станції залишаться."
+    );
+
+    if (!confirmed) return;
+
+    localStorage.removeItem("tempoRecords");
+    alert("Старі результати очищено. Можна починати нову сесію.");
+  });
 
 
   // суддя перезавантажив сторінку - підтягуєм введені раніше дані:
