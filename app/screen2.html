@@ -369,6 +369,15 @@
   });
 
   document.getElementById("resetBtn").addEventListener("click", function () {
+      // заблокувати поле спортсмена після reset
+    currentAthleteName = "";
+
+    document.getElementById("athleteName").disabled = false;
+    document.getElementById("athleteName").value = "";
+
+    document.getElementById("allowManualAthlete").disabled = false;
+    document.getElementById("allowManualAthlete").checked = false;
+    
     clearInterval(timerInterval);
     timerInterval = null;
     secondsElapsed = 0;
@@ -579,13 +588,24 @@ function editAnswer(taskIndex, row) {
 // STEP 7. Наступний спортсмен
 // -------------------------------------------------------------
 document.getElementById("nextBtn").addEventListener("click", function () {
+  // розблокувати поле спортсмена для наступного учасника
+  currentAthleteName = "";
+
+  document.getElementById("athleteName").disabled = false;
+  document.getElementById("athleteName").value = "";
+
+  document.getElementById("allowManualAthlete").disabled = false;
+  document.getElementById("allowManualAthlete").checked = false;
+
   // скидаємо всі поля
   document.getElementById("athleteName").value = "";
   secondsElapsed = 0;
   timerInterval = null;
   currentTaskIndex = 0;
   currentAnswers = new Array(taskCount).fill(null);
-  wasCorrected = false;           // кожен спортсмен починає з чистої позначки wasCorrected = false
+  wasCorrected = false;
+
+  // кожен спортсмен починає з чистої позначки wasCorrected = false
   document.getElementById("timerDisplay").textContent = "00:00";
 
   // блокуємо літери
