@@ -1,0 +1,23 @@
+# macOS system files
+.DS_Store
+**/.DS_Store
+
+# VS Code local settings
+.vscode/
+
+# Raw private data: athletes, station exports, templates, solutions
+data/raw/
+
+# Generated results
+data/processed/
+
+# Reports / temporary outputs
+reports/
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Excel temporary files
+~$*.xlsx
+~$*.xls
