@@ -1,6 +1,6 @@
 // Назва кешу — при зміні файлів додатку, міняти версію (v2, v3...)
 // щоб телефони підхопили оновлення
-const CACHE_NAME = "tempo-v1";
+const CACHE_NAME = "tempo-v2";
 
 // Всі файли які треба зберегти офлайн
 const FILES_TO_CACHE = [
@@ -8,6 +8,7 @@ const FILES_TO_CACHE = [
   "./screen2.html",
   "./screen3.html",
   "./manifest.json",
+  "data/athletes.csv",
   "images/background2.png",
   "icons/CP.png"
 ];
