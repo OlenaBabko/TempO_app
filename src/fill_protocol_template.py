@@ -33,6 +33,7 @@ from typing import Dict, List, Optional, Tuple
 
 import pandas as pd
 from openpyxl import load_workbook
+from openpyxl.cell.cell import MergedCell
 
 
 RAW_DIR = Path("data/raw")
@@ -305,7 +306,10 @@ def fill_athletes(ws, athletes: pd.DataFrame, header_row: int) -> None:
     """
     Fill athlete list into the left part of template.
     Matches columns by header names.
-    If athletes file does not have №, it assigns 1..N.
+
+    Some official Excel templates contain merged cells.
+    openpyxl cannot write into a merged child cell, only into the top-left cell.
+    This function skips merged child cells to avoid AttributeError.
     """
     if athletes is None:
         return
@@ -355,13 +359,19 @@ def fill_athletes(ws, athletes: pd.DataFrame, header_row: int) -> None:
         row = start_row + i
 
         for template_header_lower, col in template_cols.items():
+            cell = ws.cell(row=row, column=col)
+
+            # Do not write into merged child cells.
+            if isinstance(cell, MergedCell):
+                continue
+
             template_header = clean_text(ws.cell(row=header_row, column=col).value)
             source_col = source_for_template(template_header)
 
             if source_col is not None:
-                ws.cell(row=row, column=col).value = athlete[source_col]
+                cell.value = athlete[source_col]
             elif template_header_lower == "№":
-                ws.cell(row=row, column=col).value = i + 1
+                cell.value = i + 1
 
 
 def fill_solutions(ws, solutions: Dict[Tuple[int, int], str], solution_row: int, task_cols: Dict[Tuple[int, int], int]) -> None:
