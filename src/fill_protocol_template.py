@@ -302,6 +302,18 @@ def build_existing_athlete_row_map(ws, header_row: int, number_col: int, name_co
     return mapping
 
 
+def set_cell_if_writable(ws, row: int, col: int, value) -> bool:
+    """
+    Write value only if target cell is not a merged child cell.
+    Returns True if written, False if skipped.
+    """
+    cell = ws.cell(row=row, column=col)
+    if isinstance(cell, MergedCell):
+        return False
+    cell.value = value
+    return True
+
+
 def fill_athletes(ws, athletes: pd.DataFrame, header_row: int) -> None:
     """
     Fill athlete list into the left part of template.
@@ -380,7 +392,7 @@ def fill_solutions(ws, solutions: Dict[Tuple[int, int], str], solution_row: int,
 
     for key, col in task_cols.items():
         if key in solutions:
-            ws.cell(row=solution_row, column=col).value = solutions[key]
+            set_cell_if_writable(ws, solution_row, col, solutions[key])
 
 
 def fill_station_results(ws, records: pd.DataFrame, athlete_rows: Dict[str, int], task_cols: Dict[Tuple[int, int], int], time_cols: Dict[int, int]) -> None:
@@ -405,14 +417,14 @@ def fill_station_results(ws, records: pd.DataFrame, athlete_rows: Dict[str, int]
             if template_col is None:
                 missing_task_cols.append(f"{station}-{task}")
                 continue
-            ws.cell(row=row, column=template_col).value = clean_answer(rec[task_col_name])
+            set_cell_if_writable(ws, row, template_col, clean_answer(rec[task_col_name]))
 
         # Fill station time
         time_col = time_cols.get(station)
         if time_col is None:
             missing_time_cols.append(str(station))
         else:
-            ws.cell(row=row, column=time_col).value = int(rec["time_sec"])
+            set_cell_if_writable(ws, row, time_col, int(rec["time_sec"]))
 
     if missing_athletes:
         unique = sorted(set(missing_athletes))
