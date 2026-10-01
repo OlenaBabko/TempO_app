@@ -214,6 +214,7 @@
   let currentTaskIndex = 0;
   let currentAnswers = new Array(taskCount).fill(null);
   let wasCorrected = false;             // false — відповіді НЕ виправляли вручну
+  let currentAthleteName = "";
 
 
   // =====================================================
@@ -346,6 +347,10 @@
     }
 
     if (timerInterval) return; // якщо таймер уже запущено — нічого не робимо
+
+    currentAthleteName = athleteName;
+    document.getElementById("athleteName").disabled = true;
+    document.getElementById("allowManualAthlete").disabled = true;
 
     timerInterval = setInterval(function () {
       secondsElapsed++;
@@ -542,11 +547,13 @@ function editAnswer(taskIndex, row) {
   document.getElementById("saveBtn").addEventListener("click", function () {
 
     // перевірка що ім'я не порожнє
-    const athleteName = document.getElementById("athleteName").value.trim();
+    // перевірка що ім'я не порожнє
+    const athleteName = currentAthleteName || document.getElementById("athleteName").value.trim();
+
     if (!athleteName) {
       alert("Введіть номер або ім'я спортсмена");
       return;
-  }
+    }
 
     const record = {
       stationNumber: stationNumber,
