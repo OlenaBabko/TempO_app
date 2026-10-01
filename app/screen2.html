@@ -38,6 +38,12 @@
     box-sizing: border-box;
     margin-bottom: 16px;
   }
+  .manualAthleteLabel {
+    display: block;
+    margin-top: 6px;
+    font-size: 13px;
+    color: #444;
+  }
   #timerDisplay {
     text-align: center;
     font-size: 32px;
@@ -210,6 +216,79 @@
   let currentTaskIndex = 0;
   let currentAnswers = new Array(taskCount).fill(null);
   let wasCorrected = false;             // false — відповіді НЕ виправляли вручну
+
+
+  // =====================================================
+  // ATHLETES LIST — підтягуємо список спортсменів із CSV
+  // =====================================================
+
+  let athletesList = [];
+
+  async function loadAthletesList() {
+    try {
+      const response = await fetch("data/athletes.csv");
+      const text = await response.text();
+
+      athletesList = parseAthletesCsv(text);
+      renderAthletesList();
+    } catch (error) {
+      console.warn("Athletes list not loaded:", error);
+    }
+  }
+
+  function parseAthletesCsv(text) {
+    const lines = text
+      .replace(/^\uFEFF/, "")
+      .split(/\r?\n/)
+      .map(line => line.trim())
+      .filter(line => line.length > 0);
+
+    if (lines.length < 2) {
+      return [];
+    }
+
+    const delimiter = lines[0].includes(";") ? ";" : ",";
+    const headers = lines[0].split(delimiter).map(h => h.trim());
+
+    const nameIndex = headers.findIndex(h =>
+      h.toLowerCase().includes("прізвище") ||
+      h.toLowerCase().includes("спортсмен") ||
+      h.toLowerCase().includes("ім") ||
+      h.toLowerCase().includes("name")
+    );
+
+    const numberIndex = headers.findIndex(h =>
+      h === "№" ||
+      h.toLowerCase() === "no" ||
+      h.toLowerCase().includes("номер")
+    );
+
+    return lines.slice(1).map(line => {
+      const cells = line.split(delimiter).map(cell => cell.trim());
+
+      const name = nameIndex >= 0 ? cells[nameIndex] : cells[0];
+      const number = numberIndex >= 0 ? cells[numberIndex] : "";
+
+      return {
+        number: number,
+        name: name,
+        value: name
+      };
+    }).filter(athlete => athlete.name);
+  }
+
+  function renderAthletesList() {
+    const datalist = document.getElementById("athleteList");
+    datalist.innerHTML = "";
+
+    athletesList.forEach(athlete => {
+      const option = document.createElement("option");
+      option.value = athlete.value;
+      option.label = athlete.number ? `${athlete.number} — ${athlete.name}` : athlete.name;
+      datalist.appendChild(option);
+    });
+  }
+
 
   // -------------------------------------------------------------
   // STEP 2. Таймер. Тут setInterval раз на секунду додає 1 до рахунку і перемальовує екран.
