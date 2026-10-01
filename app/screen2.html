@@ -333,7 +333,16 @@
     const athleteName = document.getElementById("athleteName").value.trim();
 
     if (!athleteName) {
-      alert("Спочатку введіть номер або імʼя спортсмена");
+      alert("Спочатку оберіть спортсмена");
+      document.getElementById("athleteName").focus();
+      return;
+    }
+
+    const athleteExists = athletesList.some(athlete => athlete.value === athleteName);
+    const allowManual = document.getElementById("allowManualAthlete").checked;
+
+    if (athletesList.length > 0 && !athleteExists && !allowManual) {
+      alert("Оберіть спортсмена зі списку або поставте галочку для ручного додавання.");
       document.getElementById("athleteName").focus();
       return;
     }
@@ -597,6 +606,7 @@ document.getElementById("nextBtn").addEventListener("click", function () {
   // Перший рендер при завантаженні сторінки
   renderLetterGrid();
   renderAnswersSummary();
+  loadAthletesList();
 </script>
 
 
