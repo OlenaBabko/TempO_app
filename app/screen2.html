@@ -140,7 +140,17 @@
 
 <div id="stationInfo">Loading...</div>
 
-<input type="text" id="athleteName" placeholder="Athlete number/name">
+/*  input type="text" id="athleteName" placeholder="Athlete number/name"> */
+
+<input id="athleteName" list="athleteList" placeholder="Оберіть спортсмена зі списку">
+
+<datalist id="athleteList"></datalist>
+
+<label class="manualAthleteLabel">
+  <input type="checkbox" id="allowManualAthlete">
+  Додати вручну, якщо спортсмена немає у списку
+</label>
+
 
 <div id="timerDisplay">00:00</div>
 <div class="timerRow">
