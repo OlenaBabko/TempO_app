@@ -192,9 +192,12 @@ def map_time_columns(ws, task_header_row: int, task_cols: Dict[Tuple[int, int], 
 
 def find_solution_row(task_header_row: int) -> int:
     """
-    Usually correct answers are placed directly under 1-1, 1-2...
+    In this official template:
+    row with 1-1, 1-2, ... is the task header row;
+    the next row is a service/empty row;
+    correct answers must be placed one row lower.
     """
-    return task_header_row + 1
+    return task_header_row + 2
 
 
 # ----------------------------
